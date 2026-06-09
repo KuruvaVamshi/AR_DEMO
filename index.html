@@ -1,212 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marker-based AR</title>
-    <!-- Modern Google Font for the UI -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    
-    <!-- A-Frame and MindAR Scripts -->
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        background-color: #1a1a1a;
-      }
-      #ui-container {
-        position: absolute;
-        bottom: 40px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        z-index: 1000;
-        pointer-events: none; /* Let clicks pass through to AR canvas if needed */
-        display: flex;
-        justify-content: center;
-      }
-      .instruction-pill {
-        background: rgba(20, 20, 20, 0.85);
-        color: #ffffff;
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-family: 'Inter', sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        transition: all 0.3s ease;
-      }
-      .scanning {
-        animation: pulse 2s infinite;
-      }
-      @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-        70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-      }
-      
-      /* Optional: A loading screen while MindAR initializes */
-      #loader {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-color: #111;
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-family: 'Inter', sans-serif;
-      }
-      .spinner {
-        border: 4px solid rgba(255,255,255,0.1);
-        border-top: 4px solid #fff;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-      }
-      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-      .loader-content { text-align: center; }
-    </style>
-  </head>
-  <body>
-    <!-- Loading Screen -->
-    <div id="loader">
-      <div class="loader-content">
-        <div class="spinner" style="margin: 0 auto 20px;"></div>
-        <div>Initializing AR Engine...</div>
-      </div>
-    </div>
 
-    <!-- UI Overlay -->
-    <div id="ui-container">
-      <div class="instruction-pill scanning" id="status-text">Scan a book cover or object</div>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marker-based AR</title>
+  <!-- Modern Google Font for the UI -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- 
+  <!-- A-Frame and MindAR Scripts -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #1a1a1a;
+    }
+
+    #ui-container {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 1000;
+      pointer-events: none;
+      /* Let clicks pass through to AR canvas if needed */
+      display: flex;
+      justify-content: center;
+    }
+
+    .instruction-pill {
+      background: rgba(20, 20, 20, 0.85);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .scanning {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+      }
+    }
+
+    /* Optional: A loading screen while MindAR initializes */
+    #loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #111;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Loading Screen -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="spinner" style="margin: 0 auto 20px;"></div>
+      <div>Initializing AR Engine...</div>
+    </div>
+  </div>
+
+  <!-- UI Overlay -->
+  <div id="ui-container">
+    <div class="instruction-pill scanning" id="status-text">Scan a book cover or object</div>
+  </div>
+
+  <!-- 
       MindAR Scene
       IMPORTANT: Change "assets/targets.mind" to the path of your compiled .mind file from the MindAR compiler tool.
       The .mind file contains the visual signatures of your targets. Target 0 is the first image you upload, Target 1 is the second, etc.
     -->
-    <a-scene 
-      mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
-      
-      <a-assets>
-        <!-- Place your video and audio files in an 'assets' folder -->
-        <!-- Note: iOS requires video to be muted to auto-play or play without interaction, but since we trigger it via script, we might be fine, or we can add interactions. -->
-        <video id="book-video" src="./bookvideo.mp4" playsinline webkit-playsinline loop="true" crossorigin="anonymous"></video>
-        <audio id="object-audio" src="./assets/object-audio.mp3" crossorigin="anonymous"></audio>
-        
-        <!-- Optional: A placeholder icon for the audio object -->
-        <img id="audio-icon" src="https://cdn-icons-png.flaticon.com/512/200/200150.png" crossorigin="anonymous">
-      </a-assets>
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001; uiScanning: no;"
+    color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-assets>
+      <video id="book-video" src="./bookvideo.mp4" playsinline webkit-playsinline loop="true"
+        crossorigin="anonymous"></video>
+      <!-- Image with chair features/pointers (you need to add chair-features.png to the folder) -->
+      <img id="chair-features-img" src="./chair-features.png" crossorigin="anonymous">
+      <!-- Cloud dialog box image for the AC -->
+      <img id="cloud-dialog-img" src="https://cdn-icons-png.flaticon.com/512/116/116338.png" crossorigin="anonymous">
+    </a-assets>
 
-      <!-- Target 0: The Book Cover -->
-      <a-entity mindar-image-target="targetIndex: 0" id="target-book">
-        <!-- 
-          The video will play on top of the book. 
-          Adjust width/height to match your book's aspect ratio. 
-          For example, width="1" height="1.4" for a typical book.
-        -->
-        <a-video src="#book-video" width="1" height="1.4" position="0 0 0" rotation="0 0 0"></a-video>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- Target 0: The Book Cover -->
+    <a-entity mindar-image-target="targetIndex: 0" id="target-book">
+      <a-video src="#book-video" width="1" height="1.4" position="0 0 0" rotation="0 0 0"></a-video>
+    </a-entity>
+
+    <!-- Target 1: The Chair -->
+    <a-entity mindar-image-target="targetIndex: 1" id="target-chair">
+      <!-- Moved to the right side of the chair (X=1.2) so it doesn't overlap -->
+      <a-image src="#chair-features-img" position="1.2 0 0" height="1.2" width="1.2" rotation="0 0 0"></a-image>
+    </a-entity>
+
+    <!-- Target 2: The AC -->
+    <a-entity mindar-image-target="targetIndex: 2" id="target-ac">
+      <!-- Moved to the right side of the AC (X=1.2) -->
+      <a-entity position="1.2 0 0">
+        <a-image src="#cloud-dialog-img" position="0 0 0" height="0.8" width="1.2" rotation="0 0 0"
+          opacity="0.9"></a-image>
+        <a-text value="Super Cool AC\n\n- Energy Efficient\n- Fast Cooling\n- Quiet Mode" color="#000000" align="center"
+          position="0 0 0.05" width="1.5" scale="0.4 0.4 0.4"></a-text>
       </a-entity>
+    </a-entity>
+  </a-scene>
 
-      <!-- Target 1: The Object -->
-      <a-entity mindar-image-target="targetIndex: 1" id="target-object">
-        <!-- 
-          Visual indicator that audio is playing (optional). 
-          Could be a 3D model, an icon, or just invisible.
-        -->
-        <a-image src="#audio-icon" position="0 0 0" height="0.5" width="0.5" rotation="0 0 0" opacity="0.8"></a-image>
-      </a-entity>
-    </a-scene>
+  <script>
+    // Logic for handling AR target detection and media playback
+    document.addEventListener("DOMContentLoaded", function () {
+      const sceneEl = document.querySelector('a-scene');
+      const bookTarget = document.querySelector('#target-book');
+      const chairTarget = document.querySelector('#target-chair');
+      const acTarget = document.querySelector('#target-ac');
 
-    <script>
-      // Logic for handling AR target detection and media playback
-      document.addEventListener("DOMContentLoaded", function() {
-        const sceneEl = document.querySelector('a-scene');
-        const bookTarget = document.querySelector('#target-book');
-        const objectTarget = document.querySelector('#target-object');
-        
-        const video = document.querySelector('#book-video');
-        const audio = document.querySelector('#object-audio');
-        const statusText = document.querySelector('#status-text');
-        const loader = document.querySelector('#loader');
+      const video = document.querySelector('#book-video');
+      const statusText = document.querySelector('#status-text');
+      const loader = document.querySelector('#loader');
 
-        // Hide loader when AR engine is ready
-        sceneEl.addEventListener("arReady", (event) => {
-          loader.style.display = 'none';
-        });
+      // Hide loader when AR engine is ready
+      sceneEl.addEventListener("arReady", (event) => {
+        loader.style.display = 'none';
+      });
 
-        // Error handling if camera permission denied
-        sceneEl.addEventListener("arError", (event) => {
-          loader.querySelector('.loader-content').innerHTML = "<div style='color: #ff4444'>Camera permission is required for AR. Please allow access and reload.</div>";
-        });
+      // Error handling if camera permission denied
+      sceneEl.addEventListener("arError", (event) => {
+        loader.querySelector('.loader-content').innerHTML = "<div style='color: #ff4444'>Camera permission is required for AR. Please allow access and reload.</div>";
+      });
 
-        // --- Target 0 (Book with video) ---
-        bookTarget.addEventListener("targetFound", event => {
-          console.log("Book target found");
-          statusText.innerText = "Playing Video...";
-          statusText.classList.remove('scanning');
-          
-          // Play video. Browsers might require user interaction first, so catching errors is good practice.
-          video.play().catch(e => {
-            console.log("Autoplay blocked. Tap to play.", e);
-            statusText.innerText = "Tap screen to play video";
-          });
-        });
+      // --- Target 0 (Book with video) ---
+      bookTarget.addEventListener("targetFound", event => {
+        console.log("Book target found");
+        statusText.innerText = "Playing Video...";
+        statusText.classList.remove('scanning');
 
-        bookTarget.addEventListener("targetLost", event => {
-          console.log("Book target lost");
-          statusText.innerText = "Scan a book cover or object";
-          statusText.classList.add('scanning');
-          video.pause();
-        });
-
-        // --- Target 1 (Object with audio) ---
-        objectTarget.addEventListener("targetFound", event => {
-          console.log("Object target found");
-          statusText.innerText = "Playing Audio...";
-          statusText.classList.remove('scanning');
-          
-          audio.play().catch(e => {
-             console.log("Autoplay blocked. Tap to play.", e);
-             statusText.innerText = "Tap screen to play audio";
-          });
-        });
-
-        objectTarget.addEventListener("targetLost", event => {
-          console.log("Object target lost");
-          statusText.innerText = "Scan a book cover or object";
-          statusText.classList.add('scanning');
-          audio.pause();
-          // audio.currentTime = 0; // Uncomment if you want audio to restart from beginning next time
-        });
-
-        // Fallback interaction to handle autoplay policies
-        window.addEventListener('click', () => {
-          // A single interaction anywhere on the screen unlocks audio/video contexts
-          if (statusText.innerText.includes("Tap screen to play")) {
-             if (bookTarget.components['mindar-image-target'].el.components['mindar-image-target'].data.targetIndex === 0) { // Naive check, better to check state
-               video.play();
-             }
-             audio.play();
-          }
+        video.play().catch(e => {
+          console.log("Autoplay blocked. Tap to play.", e);
+          statusText.innerText = "Tap screen to play video";
         });
       });
-    </script>
-  </body>
+
+      bookTarget.addEventListener("targetLost", event => {
+        console.log("Book target lost");
+        statusText.innerText = "Scan a book, chair, or AC";
+        statusText.classList.add('scanning');
+        video.pause();
+      });
+
+      // --- Target 1 (Chair with Features) ---
+      chairTarget.addEventListener("targetFound", event => {
+        console.log("Chair target found");
+        statusText.innerText = "Showing Chair Features...";
+        statusText.classList.remove('scanning');
+      });
+
+      chairTarget.addEventListener("targetLost", event => {
+        console.log("Chair target lost");
+        statusText.innerText = "Scan a book, chair, or AC";
+        statusText.classList.add('scanning');
+      });
+
+      // --- Target 2 (AC with Dialog) ---
+      acTarget.addEventListener("targetFound", event => {
+        console.log("AC target found");
+        statusText.innerText = "Showing AC Info...";
+        statusText.classList.remove('scanning');
+      });
+
+      acTarget.addEventListener("targetLost", event => {
+        console.log("AC target lost");
+        statusText.innerText = "Scan a book, chair, or AC";
+        statusText.classList.add('scanning');
+      });
+
+      // Fallback interaction to handle autoplay policies
+      window.addEventListener('click', () => {
+        if (statusText.innerText.includes("Tap screen to play")) {
+          video.play();
+          statusText.innerText = "Playing Video...";
+        }
+      });
+    });
+  </script>
+</body>
+
 </html>
