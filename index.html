@@ -133,10 +133,6 @@
     <a-assets>
       <video id="book-video" src="./bookvideo.mp4" playsinline webkit-playsinline loop="true"
         crossorigin="anonymous"></video>
-      <!-- Image with chair features/pointers (you need to add chair-features.png to the folder) -->
-      <img id="chair-features-img" src="./chair-features.png" crossorigin="anonymous">
-      <!-- Cloud dialog box image for the AC -->
-      <img id="cloud-dialog-img" src="https://cdn-icons-png.flaticon.com/512/116/116338.png" crossorigin="anonymous">
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -146,21 +142,24 @@
       <a-video src="#book-video" width="1" height="1.4" position="0 0 0" rotation="0 0 0"></a-video>
     </a-entity>
 
-    <!-- Target 1: The Chair -->
-    <a-entity mindar-image-target="targetIndex: 1" id="target-chair">
-      <!-- Moved to the right side of the chair (X=1.2) so it doesn't overlap -->
-      <a-image src="#chair-features-img" position="1.2 0 0" height="1.2" width="1.2" rotation="0 0 0"></a-image>
-    </a-entity>
-
-    <!-- Target 2: The AC -->
-    <a-entity mindar-image-target="targetIndex: 2" id="target-ac">
-      <!-- Moved to the right side of the AC (X=1.2) -->
-      <a-entity position="1.2 0 0">
-        <a-image src="#cloud-dialog-img" position="0 0 0" height="0.8" width="1.2" rotation="0 0 0"
-          opacity="0.9"></a-image>
-        <a-text value="Super Cool AC\n\n- Energy Efficient\n- Fast Cooling\n- Quiet Mode" color="#000000" align="center"
-          position="0 0 0.05" width="1.5" scale="0.4 0.4 0.4"></a-text>
-      </a-entity>
+    <!-- Target 1: The Pen -->
+    <a-entity mindar-image-target="targetIndex: 1" id="target-pen">
+      <!-- Pen Parts arranged for the horizontal pen image -->
+      
+      <!-- Top Left (Above the cap): Clip -->
+      <a-text value="Gold Pocket Clip" color="#ffeb3b" align="center" position="-0.4 0.3 0" scale="0.4 0.4 0.4"></a-text>
+      
+      <!-- Bottom Left (Below the cap): Cap -->
+      <a-text value="Pen Cap" color="#ffffff" align="center" position="-0.4 -0.3 0" scale="0.4 0.4 0.4"></a-text>
+      
+      <!-- Top Right (Above the barrel): Logo -->
+      <a-text value="Brand Logo" color="#03a9f4" align="center" position="0.4 0.3 0" scale="0.4 0.4 0.4"></a-text>
+      
+      <!-- Bottom Right (Below the barrel): Barrel -->
+      <a-text value="Ink Barrel" color="#4caf50" align="center" position="0.4 -0.3 0" scale="0.4 0.4 0.4"></a-text>
+      
+      <!-- Center (Gold Band) -->
+      <a-text value="Gold Accent Band" color="#ff9800" align="center" position="0 -0.4 0" scale="0.3 0.3 0.3"></a-text>
     </a-entity>
   </a-scene>
 
@@ -169,8 +168,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       const sceneEl = document.querySelector('a-scene');
       const bookTarget = document.querySelector('#target-book');
-      const chairTarget = document.querySelector('#target-chair');
-      const acTarget = document.querySelector('#target-ac');
+      const penTarget = document.querySelector('#target-pen');
 
       const video = document.querySelector('#book-video');
       const statusText = document.querySelector('#status-text');
@@ -200,34 +198,21 @@
 
       bookTarget.addEventListener("targetLost", event => {
         console.log("Book target lost");
-        statusText.innerText = "Scan a book, chair, or AC";
+        statusText.innerText = "Scan a book or pen";
         statusText.classList.add('scanning');
         video.pause();
       });
 
-      // --- Target 1 (Chair with Features) ---
-      chairTarget.addEventListener("targetFound", event => {
-        console.log("Chair target found");
-        statusText.innerText = "Showing Chair Features...";
+      // --- Target 1 (Pen with Features) ---
+      penTarget.addEventListener("targetFound", event => {
+        console.log("Pen target found");
+        statusText.innerText = "Showing Pen Parts...";
         statusText.classList.remove('scanning');
       });
 
-      chairTarget.addEventListener("targetLost", event => {
-        console.log("Chair target lost");
-        statusText.innerText = "Scan a book, chair, or AC";
-        statusText.classList.add('scanning');
-      });
-
-      // --- Target 2 (AC with Dialog) ---
-      acTarget.addEventListener("targetFound", event => {
-        console.log("AC target found");
-        statusText.innerText = "Showing AC Info...";
-        statusText.classList.remove('scanning');
-      });
-
-      acTarget.addEventListener("targetLost", event => {
-        console.log("AC target lost");
-        statusText.innerText = "Scan a book, chair, or AC";
+      penTarget.addEventListener("targetLost", event => {
+        console.log("Pen target lost");
+        statusText.innerText = "Scan a book or pen";
         statusText.classList.add('scanning');
       });
 
