@@ -126,15 +126,13 @@
       IMPORTANT: Change "assets/targets.mind" to the path of your compiled .mind file from the MindAR compiler tool.
       The .mind file contains the visual signatures of your targets. Target 0 is the first image you upload, Target 1 is the second, etc.
     -->
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001; uiScanning: no;"
+  <a-scene mindar-image="imageTargetSrc: ./target.mind; filterMinCF:0.0001; filterBeta: 0.001; uiScanning: no;"
     color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
 
     <a-assets>
       <video id="book-video" src="./bookvideo.mp4" playsinline webkit-playsinline loop="true"
         crossorigin="anonymous"></video>
-      <!-- Image with chair features/pointers (you need to add chair-features.png to the folder) -->
-      <img id="chair-features-img" src="./chair-features.png" crossorigin="anonymous">
       <!-- Cloud dialog box image for the AC -->
       <img id="cloud-dialog-img" src="https://cdn-icons-png.flaticon.com/512/116/116338.png" crossorigin="anonymous">
     </a-assets>
@@ -149,7 +147,8 @@
     <!-- Target 1: The Chair -->
     <a-entity mindar-image-target="targetIndex: 1" id="target-chair">
       <!-- Moved to the right side of the chair (X=1.2) so it doesn't overlap -->
-      <a-image src="#chair-features-img" position="1.2 0 0" height="1.2" width="1.2" rotation="0 0 0"></a-image>
+      <!-- Pointing directly to chair-features.png. Make sure to add this file to your folder! -->
+      <a-image src="./chair-features.png" position="1.2 0 0" height="1.2" width="1.2" rotation="0 0 0"></a-image>
     </a-entity>
 
     <!-- Target 2: The AC -->
